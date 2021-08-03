@@ -40,8 +40,8 @@ public func createInstance(of type: Any.Type, constructor: ((PropertyInfo) throw
     
     let kind = Kind(type: type)
     switch kind {
-    case .struct:
-        return try buildStruct(type: type, constructor: constructor)
+    case .struct, .tuple:
+        return try buildStructOrTuple(type: type, constructor: constructor)
     case .class:
         return try buildClass(type: type)
     default:
@@ -49,7 +49,7 @@ public func createInstance(of type: Any.Type, constructor: ((PropertyInfo) throw
     }
 }
 
-func buildStruct(type: Any.Type, constructor: ((PropertyInfo) throws -> Any)? = nil) throws -> Any {
+func buildStructOrTuple(type: Any.Type, constructor: ((PropertyInfo) throws -> Any)? = nil) throws -> Any {
     let info = try typeInfo(of: type)
     let pointer = UnsafeMutableRawPointer.allocate(byteCount: info.size, alignment: info.alignment)
     defer { pointer.deallocate() }
